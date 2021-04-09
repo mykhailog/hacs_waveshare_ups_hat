@@ -6,7 +6,7 @@
 ## About
 This integration allows you to monitor [Waveshare UPS Hat](https://www.waveshare.com/wiki/UPS_HAT) status in your Home Assistant instance.
 
-![image](https://user-images.githubusercontent.com/1454659/114192761-86a30580-9956-11eb-9c37-d7e860146dac.png)
+<img src="https://user-images.githubusercontent.com/1454659/114192761-86a30580-9956-11eb-9c37-d7e860146dac.png" width="400" />
 
 
 
@@ -99,4 +99,5 @@ It will output a table like this:
 70: -- -- -- -- -- -- -- 77
 ```
 
-## Licens
+## License
+MIT 
