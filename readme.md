@@ -3,7 +3,6 @@
 
 # Waveshare UPS HAT Integration for Home Assistant
 
-## About
 This integration allows you to monitor [Waveshare UPS Hat](https://www.waveshare.com/wiki/UPS_HAT) status in your Home Assistant instance.
 
 <img src="https://user-images.githubusercontent.com/1454659/114192761-86a30580-9956-11eb-9c37-d7e860146dac.png" width="400" />
