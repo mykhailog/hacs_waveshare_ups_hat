@@ -1,0 +1,8 @@
+{
+  "domain": "waveshare_ups_hat",
+  "name": "Waveshare UPS Hat",
+  "documentation": "",
+  "requirements": ["smbus-cffi==0.5.1"],
+  "codeowners": ["@mykhailog","@waveshare"],
+  "version": "0.1.0"
+}

@@ -1,0 +1,5 @@
+{
+  "name": "Waveshare UPS Hat",
+  "domains": ["sensor","binary_sensor"],
+  "render_readme": true
+}
