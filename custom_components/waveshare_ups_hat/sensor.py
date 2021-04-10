@@ -4,28 +4,33 @@ import os
 
 import voluptuous as vol
 
-from homeassistant.components.sensor import  SensorEntity
+from homeassistant.components.sensor import SensorEntity
 from homeassistant.const import DEVICE_CLASS_BATTERY, PERCENTAGE
 import homeassistant.helpers.config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 
 from .ina219 import INA219
-
+from .const import (
+    MIN_CHARGING_CURRENT,
+    MIN_ONLINE_CURRENT,
+    MIN_BATTERY_CONNECTED_POWER,
+    LOW_BATTERY_PERCENTAGE,
+)
 
 ATTR_CAPACITY = "capacity"
-ATTR_PSU_VOLTAGE = 'psu_voltage'
-ATTR_SHUNT_VOLTAGE = 'shunt_voltage'
-ATTR_LOAD_VOLTAGE = 'load_voltage'
-ATTR_CURRENT = 'current'
-ATTR_POWER = 'power'
-ATTR_CHARGING = 'charging'
-ATTR_ONLINE = 'online'
-ATTR_BATTERY_CONNECTED = 'battery_connected'
+ATTR_PSU_VOLTAGE = "psu_voltage"
+ATTR_SHUNT_VOLTAGE = "shunt_voltage"
+ATTR_LOAD_VOLTAGE = "load_voltage"
+ATTR_CURRENT = "current"
+ATTR_POWER = "power"
+ATTR_CHARGING = "charging"
+ATTR_ONLINE = "online"
+ATTR_BATTERY_CONNECTED = "battery_connected"
+ATTR_LOW_BATTERY = "low_battery"
 
-DEFAULT_NAME = 'waveshare_ups_hat'
-MIN_CURRENT = -0.001
-MIN_POWER = 0.01
+DEFAULT_NAME = "waveshare_ups_hat"
+
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the Waveshare UPS Hat sensor."""
@@ -71,19 +76,36 @@ class WaveshareUpsHat(SensorEntity):
     def update(self):
         """Get the latest data and updates the states."""
         ina219 = self._ina219
-        bus_voltage = ina219.getBusVoltage_V()             # voltage on V- (load side)
-        shunt_voltage = ina219.getShuntVoltage_mV() / 1000 # voltage between V+ and V- across the shunt
-        current = ina219.getCurrent_mA()                # current in mA
-        power = ina219.getPower_W()                        # power in W
+        bus_voltage = ina219.getBusVoltage_V()  # voltage on V- (load side)
+        shunt_voltage = (
+            ina219.getShuntVoltage_mV() / 1000
+        )  # voltage between V+ and V- across the shunt
+        current = ina219.getCurrent_mA()  # current in mA
+        power = ina219.getPower_W()  # power in W
         percent = (bus_voltage - 6) / 2.4 * 100
-        if(percent > 100):percent = 100
-        if(percent < 0):percent= 0
-        self._attrs = {ATTR_CAPACITY: round(percent,0),
-                      ATTR_PSU_VOLTAGE: bus_voltage + shunt_voltage,
-                      ATTR_SHUNT_VOLTAGE: shunt_voltage,
-                      ATTR_CURRENT: current,
-                      ATTR_POWER: power,
-                      ATTR_CHARGING: current > 0.0,
-                      ATTR_ONLINE:  current > MIN_CURRENT,
-                      ATTR_BATTERY_CONNECTED: power > MIN_POWER
-                      }
+
+        if percent > 100:
+            percent = 100
+        if percent < 0:
+            percent = 0
+
+        battery_connected = power > MIN_BATTERY_CONNECTED_POWER
+        capacity = round(percent, 0)
+        online = current > MIN_ONLINE_CURRENT
+        charging = current > MIN_CHARGING_CURRENT
+        low_battery = online and capacity < LOW_BATTERY_PERCENTAGE
+
+        if not battery_connected:
+            capacity = 0.0  # no battery no capacity
+
+        self._attrs = {
+            ATTR_CAPACITY: capacity,
+            ATTR_PSU_VOLTAGE: bus_voltage + shunt_voltage,
+            ATTR_SHUNT_VOLTAGE: shunt_voltage,
+            ATTR_CURRENT: current,
+            ATTR_POWER: power,
+            ATTR_CHARGING: charging,
+            ATTR_ONLINE: online,
+            ATTR_BATTERY_CONNECTED: battery_connected,
+            ATTR_LOW_BATTERY: low_battery
+        }

@@ -5,19 +5,21 @@ import voluptuous as vol
 from homeassistant.components.binary_sensor import BinarySensorEntity
 import homeassistant.helpers.config_validation as cv
 from .ina219 import INA219
+from homeassistant.const import DEVICE_CLASS_POWER
 
-DEFAULT_NAME = 'waveshare_ups_hat_online'
-MIN_CURRENT = -0.001
+DEFAULT_NAME = "waveshare_ups_hat_online"
+from .const import MIN_ONLINE_CURRENT
+
 
 def setup_platform(
     hass,
     config,
     add_entities,
     discovery_info=None,
-    ):
+):
     """Set up an Online Status binary sensor."""
 
-    add_entities([OnlineStatus(config,{})], True)
+    add_entities([OnlineStatus(config, {})], True)
 
 
 class OnlineStatus(BinarySensorEntity):
@@ -38,6 +40,11 @@ class OnlineStatus(BinarySensorEntity):
         return self._name
 
     @property
+    def device_class(self):
+        """Return the device class of the binary sensor."""
+        return DEVICE_CLASS_POWER
+
+    @property
     def is_on(self):
         """Return true if the UPS is online, else false."""
 
@@ -46,4 +53,4 @@ class OnlineStatus(BinarySensorEntity):
     def update(self):
         """Get the status from UPS online status and set this entity's state."""
 
-        self._state = self._ina219.getCurrent_mA() > MIN_CURRENT
+        self._state = self._ina219.getCurrent_mA() > MIN_ONLINE_CURRENT

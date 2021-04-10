@@ -5,7 +5,7 @@
 
 This integration allows you to monitor [Waveshare UPS Hat](https://www.waveshare.com/wiki/UPS_HAT) status in your Home Assistant instance.
 
-<img src="https://user-images.githubusercontent.com/1454659/114192761-86a30580-9956-11eb-9c37-d7e860146dac.png" width="400" />
+<img src="https://user-images.githubusercontent.com/1454659/114266149-595d6280-99fd-11eb-9056-dd0fbe178ecc.png" width="400" />
 
 
 
@@ -24,6 +24,9 @@ In the end your file structure should look like that:
 ~/.homeassistant/custom_components/waveshare_ups_hat/__init__.py
 ~/.homeassistant/custom_components/waveshare_ups_hat/manifest.json
 ~/.homeassistant/custom_components/waveshare_ups_hat/sensor.py
+~/.homeassistant/custom_components/waveshare_ups_hat/binary_sensor.py
+~/.homeassistant/custom_components/waveshare_ups_hat/const.py
+~/.homeassistant/custom_components/waveshare_ups_hat/ina219.py
 ```
 
 ## Configuration
@@ -40,9 +43,10 @@ Following data can be read:
  - Shunt Voltage
  - Current
  - Power
- - Charging
- - Online
- - Battery Connected
+ - Charging Status
+ - Online Status
+ - Is Battery Connected
+ - Is Low Battery (< 20%)
 
 ### Binary Sensor
 In addition to the  sensor devices, you may also create a device which is simply “on” when the UPS status is online and “off” at all other times.
@@ -99,4 +103,4 @@ It will output a table like this:
 ```
 
 ## License
-MIT 
+MIT
