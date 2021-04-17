@@ -45,7 +45,6 @@ Following data can be read:
  - Power
  - Charging Status
  - Online Status
- - Is Battery Connected
  - Is Low Battery (< 20%)
 
 ### Binary Sensor
