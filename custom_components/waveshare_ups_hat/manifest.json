@@ -5,5 +5,5 @@
   "issue_tracker": "https://github.com/mykhailog/hacs_waveshare_ups_hat/issues",
   "requirements": ["smbus2>=0.4.2"],
   "codeowners": ["@mykhailog"],
-  "version": "0.1.4"
+  "version": "0.1.5"
 }

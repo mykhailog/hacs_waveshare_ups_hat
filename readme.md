@@ -49,6 +49,14 @@ Following data can be read:
  - Online Status
  - Is Low Battery (< 20%)
 
+If you consistently experience capacity below 100% when the device is fully charged, you can adjust it using the max_capacity property.
+
+```yaml
+sensor:
+  - platform: waveshare_ups_hat
+    max_capacity: 91             
+```
+
 ### Binary Sensor
 In addition to the  sensor devices, you may also create a device which is simply “on” when the UPS status is online and “off” at all other times.
 

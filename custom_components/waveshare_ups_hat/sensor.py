@@ -16,10 +16,11 @@ from .const import (
     MIN_CHARGING_CURRENT,
     MIN_ONLINE_CURRENT,
     MIN_BATTERY_CONNECTED_CURRENT,
-    LOW_BATTERY_PERCENTAGE,
+    LOW_BATTERY_PERCENTAGE
 )
 
 ATTR_CAPACITY = "capacity"
+ATTR_REAL_CAPACITY = "real_capacity"
 ATTR_PSU_VOLTAGE = "psu_voltage"
 ATTR_SHUNT_VOLTAGE = "shunt_voltage"
 ATTR_LOAD_VOLTAGE = "load_voltage"
@@ -30,11 +31,12 @@ ATTR_ONLINE = "online"
 ATTR_BATTERY_CONNECTED = "battery_connected"
 ATTR_LOW_BATTERY = "low_battery"
 ATTR_POWER_CALCULATED= "power_calculated"
-
+CONF_MAX_CAPACITY = 'max_capacity'
 DEFAULT_NAME = "waveshare_ups_hat"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
+    vol.Optional(CONF_MAX_CAPACITY, default=100): cv.positive_int,
     vol.Optional(CONF_UNIQUE_ID): cv.string,
 })
 
@@ -42,16 +44,22 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the Waveshare UPS Hat sensor."""
     name = config.get(CONF_NAME)
     unique_id = config.get(CONF_UNIQUE_ID)
-    add_entities([WaveshareUpsHat(name,unique_id)], True)
+    max_capacity = config.get(CONF_MAX_CAPACITY)
+    add_entities([WaveshareUpsHat(name,unique_id,max_capacity)], True)
 
 
 class WaveshareUpsHat(SensorEntity):
     """Representation of a Waveshare UPS Hat."""
 
-    def __init__(self, name, unique_id=None):
+    def __init__(self, name, unique_id=None,max_capacity=None):
         """Initialize the sensor."""
         self._name = name
         self._unique_id = unique_id
+        if max_capacity > 100:
+           max_capacity = 100
+        elif max_capacity < 1:
+           max_capacity = 1
+        self._max_capacity = max_capacity
         self._ina219 = INA219(addr=0x42)
         self._attrs = {}
 
@@ -94,7 +102,10 @@ class WaveshareUpsHat(SensorEntity):
         )  # voltage between V+ and V- across the shunt
         current = ina219.getCurrent_mA()  # current in mA
         power = ina219.getPower_W()  # power in W
-        percent = (bus_voltage - 6) / 2.4 * 100
+
+        real_percent = (bus_voltage - 6) / 2.4 * 100
+
+        percent  = (bus_voltage - 6) / (2.4 * (self._max_capacity / 100.0) )  * 100
 
         if percent > 100:
             percent = 100
@@ -114,6 +125,7 @@ class WaveshareUpsHat(SensorEntity):
 
         self._attrs = {
             ATTR_CAPACITY: capacity,
+            ATTR_REAL_CAPACITY: real_percent,
             ATTR_PSU_VOLTAGE: round(bus_voltage + shunt_voltage,5),
             ATTR_LOAD_VOLTAGE: round(bus_voltage,5),
             ATTR_SHUNT_VOLTAGE: round(shunt_voltage,5),
