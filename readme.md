@@ -59,9 +59,10 @@ binary_sensor:
 
 ## Directions for installing smbus support on Raspberry Pi
 
-### HASS OS
+### HassOS
 
-To enable i2c in Home Assistant OS System follow this [instruction](https://www.home-assistant.io/common-tasks/os/#enable-i2c)
+To enable i2c in Home Assistant OS System follow this [instruction](https://www.home-assistant.io/common-tasks/os/#enable-i2c) or
+use this [addon](https://community.home-assistant.io/t/add-on-hassos-i2c-configurator/264167)
 
 ### Home Asisstant Core
 
