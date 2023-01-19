@@ -20,7 +20,8 @@ from .const import (
 )
 
 ATTR_CAPACITY = "capacity"
-ATTR_REAL_CAPACITY = "real_capacity"
+ATTR_SOC = "soc"
+ATTR_REAL_SOC = "real_soc"
 ATTR_PSU_VOLTAGE = "psu_voltage"
 ATTR_SHUNT_VOLTAGE = "shunt_voltage"
 ATTR_LOAD_VOLTAGE = "load_voltage"
@@ -31,12 +32,18 @@ ATTR_ONLINE = "online"
 ATTR_BATTERY_CONNECTED = "battery_connected"
 ATTR_LOW_BATTERY = "low_battery"
 ATTR_POWER_CALCULATED= "power_calculated"
-CONF_MAX_CAPACITY = 'max_capacity'
+
+ATTR_REMAINING_BATTERY_CAPACITY = "remaining_battery_capacity"
+ATTR_REMAINING_TIME = "remaining_time_min"
+
+CONF_BATTERY_CAPACITY= "battery_capacity"
+CONF_MAX_SOC = 'max_soc'
 DEFAULT_NAME = "waveshare_ups_hat"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    vol.Optional(CONF_MAX_CAPACITY, default=100): cv.positive_int,
+    vol.Optional(CONF_MAX_SOC, default=100): cv.positive_int,
+    vol.Optional(CONF_BATTERY_CAPACITY): cv.positive_int,
     vol.Optional(CONF_UNIQUE_ID): cv.string,
 })
 
@@ -44,22 +51,24 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the Waveshare UPS Hat sensor."""
     name = config.get(CONF_NAME)
     unique_id = config.get(CONF_UNIQUE_ID)
-    max_capacity = config.get(CONF_MAX_CAPACITY)
-    add_entities([WaveshareUpsHat(name,unique_id,max_capacity)], True)
+    max_soc = config.get(CONF_MAX_SOC)
+    battery_capacity = config.get(CONF_BATTERY_CAPACITY)
+    add_entities([WaveshareUpsHat(name,unique_id,max_soc,battery_capacity)], True)
 
 
 class WaveshareUpsHat(SensorEntity):
     """Representation of a Waveshare UPS Hat."""
 
-    def __init__(self, name, unique_id=None,max_capacity=None):
+    def __init__(self, name, unique_id=None, max_soc=None, battery_capacity=None):
         """Initialize the sensor."""
         self._name = name
         self._unique_id = unique_id
-        if max_capacity > 100:
-           max_capacity = 100
-        elif max_capacity < 1:
-           max_capacity = 1
-        self._max_capacity = max_capacity
+        if max_soc > 100:
+           max_soc = 100
+        elif max_soc < 1:
+           max_soc = 1
+        self._max_soc = max_soc
+        self._battery_capacity = battery_capacity
         self._ina219 = INA219(addr=0x42)
         self._attrs = {}
 
@@ -76,7 +85,7 @@ class WaveshareUpsHat(SensorEntity):
     @property
     def state(self):
         """Return the state of the sensor."""
-        return self._attrs.get(ATTR_CAPACITY)
+        return self._attrs.get(ATTR_SOC)
 
     @property
     def unit_of_measurement(self):
@@ -103,29 +112,42 @@ class WaveshareUpsHat(SensorEntity):
         current = ina219.getCurrent_mA()  # current in mA
         power = ina219.getPower_W()  # power in W
 
-        real_percent = (bus_voltage - 6) / 2.4 * 100
+        real_soc = (bus_voltage - 6) / 2.4 * 100
 
-        percent  = (bus_voltage - 6) / (2.4 * (self._max_capacity / 100.0) )  * 100
+        soc  = (bus_voltage - 6) / (2.4 * (self._max_soc / 100.0) )  * 100
 
-        if percent > 100:
-            percent = 100
-        if percent < 0:
-            percent = 0
+        if soc > 100:
+            soc = 100
+        if soc < 0:
+            soc = 0
 
         #battery_connected = current > MIN_BATTERY_CONNECTED_CURRENT
-        capacity = round(percent, 0)
+
         online = current > MIN_ONLINE_CURRENT
         charging = current > MIN_CHARGING_CURRENT
 
-        low_battery = online and capacity < LOW_BATTERY_PERCENTAGE
+        low_battery = online and soc < LOW_BATTERY_PERCENTAGE
         power_calculated = bus_voltage * (current / 1000)
+
+        if self._battery_capacity is None:
+            remaining_battery_capacity = None
+            remaining_time = None
+        else:
+            remaining_battery_capacity = (real_soc / 100.0) * self._battery_capacity
+            if current < 0:
+                remaining_time = round((remaining_battery_capacity / -current) * 60.0, 0)
+            elif current > 0:
+                remaining_time = None # round(((self._battery_capacity - remaining_battery_capacity) / current) * 60.0, 0)
+            else:
+                remaining_time = None
 
         # if not battery_connected:
         #    capacity = 0.0  # no battery no capacity
 
         self._attrs = {
-            ATTR_CAPACITY: capacity,
-            ATTR_REAL_CAPACITY: real_percent,
+            ATTR_CAPACITY: round(soc, 0),
+            ATTR_SOC: round(soc, 0),
+            ATTR_REAL_SOC: real_soc,
             ATTR_PSU_VOLTAGE: round(bus_voltage + shunt_voltage,5),
             ATTR_LOAD_VOLTAGE: round(bus_voltage,5),
             ATTR_SHUNT_VOLTAGE: round(shunt_voltage,5),
@@ -134,6 +156,8 @@ class WaveshareUpsHat(SensorEntity):
             ATTR_POWER_CALCULATED: round(power_calculated,5),
             ATTR_CHARGING: charging,
             ATTR_ONLINE: online,
+            ATTR_REMAINING_BATTERY_CAPACITY: remaining_battery_capacity,
+            ATTR_REMAINING_TIME: remaining_time,
 #            ATTR_BATTERY_CONNECTED: battery_connected,
             ATTR_LOW_BATTERY: low_battery
         }

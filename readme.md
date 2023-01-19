@@ -40,7 +40,7 @@ sensor:
     unique_id: waveshare_ups     # Optional
 ```
 Following data can be read:
-
+ - SoC (State of Charge)
  - PSU Voltage
  - Shunt Voltage
  - Current
@@ -49,12 +49,12 @@ Following data can be read:
  - Online Status
  - Is Low Battery (< 20%)
 
-If you consistently experience capacity below 100% when the device is fully charged, you can adjust it using the max_capacity property.
+If you consistently experience capacity below 100% when the device is fully charged, you can adjust it using the `max_soc` property.
 
 ```yaml
 sensor:
   - platform: waveshare_ups_hat
-    max_capacity: 91             
+    max_soc: 91                      
 ```
 
 ### Binary Sensor
