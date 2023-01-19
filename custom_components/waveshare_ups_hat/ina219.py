@@ -1,6 +1,6 @@
 
 # https://github.com/waveshare/UPS-Power-Module/blob/master/ups_display/ina219.py
-import smbus
+import smbus2 as smbus
 import time
 
 # Config Register (R/W)

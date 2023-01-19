@@ -5,7 +5,7 @@ import os
 import voluptuous as vol
 
 from homeassistant.components.sensor import SensorEntity,PLATFORM_SCHEMA
-from homeassistant.const import DEVICE_CLASS_BATTERY, PERCENTAGE, CONF_NAME
+from homeassistant.const import DEVICE_CLASS_BATTERY, PERCENTAGE, CONF_NAME, CONF_UNIQUE_ID
 import homeassistant.helpers.config_validation as cv
 
 
@@ -34,22 +34,24 @@ ATTR_POWER_CALCULATED= "power_calculated"
 DEFAULT_NAME = "waveshare_ups_hat"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
-    vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
+    vol.Optional(CONF_UNIQUE_ID): cv.string,
 })
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the Waveshare UPS Hat sensor."""
     name = config.get(CONF_NAME)
-    add_entities([WaveshareUpsHat(name)], True)
+    unique_id = config.get(CONF_UNIQUE_ID)
+    add_entities([WaveshareUpsHat(name,unique_id)], True)
 
 
 class WaveshareUpsHat(SensorEntity):
     """Representation of a Waveshare UPS Hat."""
 
-    def __init__(self, name):
+    def __init__(self, name, unique_id=None):
         """Initialize the sensor."""
-
-        self._name = DEFAULT_NAME
+        self._name = name
+        self._unique_id = unique_id
         self._ina219 = INA219(addr=0x42)
         self._attrs = {}
 
@@ -77,6 +79,11 @@ class WaveshareUpsHat(SensorEntity):
     def extra_state_attributes(self):
         """Return the state attributes of the sensor."""
         return self._attrs
+
+    @property
+    def unique_id(self):
+        """Return the unique id of the sensor."""
+        return self._unique_id
 
     def update(self):
         """Get the latest data and updates the states."""

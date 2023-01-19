@@ -36,6 +36,8 @@ Create a new sensor entry in your `configuration.yaml`
 ```yaml
 sensor:
   - platform: waveshare_ups_hat
+    name: UPS                    # Optional
+    unique_id: waveshare_ups     # Optional
 ```
 Following data can be read:
 
@@ -56,6 +58,12 @@ binary_sensor:
 ```
 
 ## Directions for installing smbus support on Raspberry Pi
+
+### HASS OS
+
+To enable i2c in Home Assistant OS System follow this [instruction](https://www.home-assistant.io/common-tasks/os/#enable-i2c)
+
+### Home Asisstant Core
 
 Enable I2c interface with the Raspberry Pi configuration utility:
 
@@ -79,7 +87,7 @@ $ sudo addgroup homeassistant i2c
 $ sudo reboot
 ```
 
-### Check the i2c address of the sensor
+#### Check the i2c address of the sensor
 
 After installing `i2c-tools`, a new utility is available to scan the addresses of the connected sensors:
 
@@ -102,4 +110,4 @@ It will output a table like this:
 ```
 
 ## License
-MIT
+MIT 2023
