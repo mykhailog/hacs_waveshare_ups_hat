@@ -38,6 +38,9 @@ sensor:
   - platform: waveshare_ups_hat
     name: UPS                    # Optional
     unique_id: waveshare_ups     # Optional
+    max_soc: 91                  # Optional
+    sma_samples: 5               # Optional
+    batteries_count: 2           # Optional
 ```
 Following data can be read:
  - SoC (State of Charge)
@@ -68,6 +71,9 @@ sensor:
 ```
 
 *Tip:* Doubled window size is used for calculation of SoC, Remaining Battery Capacity and Remaining Time
+
+#### Batteries Count
+Original Waveshare UPS Hat have 2 batteries in series (8.4V) but some versions of UPS Hat have 3 batteries (12.6V). Use `batteries_count` in case of more than 2 batteries in series on your device. 
 
 ### Binary Sensor
 In addition to the  sensor devices, you may also create a device which is simply “on” when the UPS status is online and “off” at all other times.
