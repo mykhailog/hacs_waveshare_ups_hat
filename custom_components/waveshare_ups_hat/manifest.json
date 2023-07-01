@@ -3,7 +3,7 @@
   "name": "Waveshare UPS Hat",
   "documentation": "https://github.com/mykhailog/hacs_waveshare_ups_hat",
   "issue_tracker": "https://github.com/mykhailog/hacs_waveshare_ups_hat/issues",
-  "requirements": ["smbus2>=0.4.2"],
+  "requirements": ["smbus2>=0.4.2","numpy>=1.23.2"],
   "codeowners": ["@mykhailog"],
-  "version": "0.1.6"
+  "version": "0.1.7"
 }
