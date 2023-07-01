@@ -57,6 +57,18 @@ sensor:
     max_soc: 91                      
 ```
 
+#### SMA Filtering
+By default SMA5 filter is applied to values from INA219. This is needed to filter out noise from switching power supply and provide more smooth readings. You can control window size with `sma_samples` property. 
+
+```yaml
+sensor:
+  - platform: waveshare_ups_hat
+    max_soc: 91
+    sma_samples: 10                    
+```
+
+*Tip:* Doubled window size is used for calculation of SoC, Remaining Battery Capacity and Remaining Time
+
 ### Binary Sensor
 In addition to the  sensor devices, you may also create a device which is simply “on” when the UPS status is online and “off” at all other times.
 
