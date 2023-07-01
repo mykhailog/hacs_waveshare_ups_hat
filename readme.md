@@ -61,7 +61,7 @@ sensor:
 ```
 
 #### SMA Filtering
-By default SMA5 filter is applied to values from INA219. This is needed to filter out noise from switching power supply and provide more smooth readings. You can control window size with `sma_samples` property. 
+By default, the SMA5 filter is applied to the measurements from INA219. That's necessary to filter out noise from the switching power supply and provide smoother readings. You can control the window size with the `sma_samples` property.
 
 ```yaml
 sensor:
@@ -73,7 +73,7 @@ sensor:
 *Tip:* Doubled window size is used for calculation of SoC, Remaining Battery Capacity and Remaining Time
 
 #### Batteries Count
-Original Waveshare UPS Hat have 2 batteries in series (8.4V) but some versions of UPS Hat have 3 batteries (12.6V). Use `batteries_count` in case of more than 2 batteries in series on your device. 
+The original Waveshare UPS Hat has 2 batteries in series (8.4V), but some versions of the UPS Hat may have 3 batteries (12.6V). If you have more than 2 batteries in series, use the `batteries_count` parameter.
 
 ### Binary Sensor
 In addition to the  sensor devices, you may also create a device which is simply “on” when the UPS status is online and “off” at all other times.
