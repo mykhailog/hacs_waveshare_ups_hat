@@ -38,6 +38,9 @@ sensor:
   - platform: waveshare_ups_hat
     name: UPS                    # Optional
     unique_id: waveshare_ups     # Optional
+    max_soc: 91                  # Optional
+    sma_samples: 5               # Optional
+    batteries_count: 2           # Optional
 ```
 Following data can be read:
  - SoC (State of Charge)
@@ -56,6 +59,21 @@ sensor:
   - platform: waveshare_ups_hat
     max_soc: 91                      
 ```
+
+#### SMA Filtering
+By default, the SMA5 filter is applied to the measurements from INA219. That's necessary to filter out noise from the switching power supply and provide smoother readings. You can control the window size with the `sma_samples` property.
+
+```yaml
+sensor:
+  - platform: waveshare_ups_hat
+    max_soc: 91
+    sma_samples: 10                    
+```
+
+*Tip:* Doubled window size is used for calculation of SoC, Remaining Battery Capacity and Remaining Time
+
+#### Batteries Count
+The original Waveshare UPS Hat has 2 batteries in series (8.4V), but some versions of the UPS Hat may have 3 batteries (12.6V). If you have more than 2 batteries in series, use the `batteries_count` parameter.
 
 ### Binary Sensor
 In addition to the  sensor devices, you may also create a device which is simply “on” when the UPS status is online and “off” at all other times.
