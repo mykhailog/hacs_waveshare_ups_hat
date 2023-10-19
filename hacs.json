@@ -1,6 +1,5 @@
 {
   "name": "INA219 UPS Hat",
-  "domains": ["sensor","binary_sensor"],
   "render_readme": true,
   "iot_class": ["Local Polling"]
 }
