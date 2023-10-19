@@ -1,5 +1,4 @@
 {
   "name": "INA219 UPS Hat",
-  "render_readme": true,
-  "iot_class": ["Local Polling"]
+  "render_readme": true
 }
