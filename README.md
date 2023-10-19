@@ -1,32 +1,34 @@
 
 
 
-# Waveshare UPS HAT Integration for Home Assistant
+# INA219 UPS HAT Integration for Home Assistant
 
-This integration allows you to monitor [Waveshare UPS Hat](https://www.waveshare.com/wiki/UPS_HAT) status in your Home Assistant instance.
+This integration allows you to monitor any INA219 based UPS hat (e.g. [Waveshare UPS Hat](https://www.waveshare.com/wiki/UPS_HAT) or its clones) status in your Home Assistant instance.
 
-<img src="https://user-images.githubusercontent.com/1454659/114266149-595d6280-99fd-11eb-9056-dd0fbe178ecc.png" width="400" />
+<img alt="Waveshare UPS hat" src="https://user-images.githubusercontent.com/1454659/114266149-595d6280-99fd-11eb-9056-dd0fbe178ecc.png" width="300" height="auto" />
+<img alt="INA219 UPS hat" src="docs/INA219_3S_UPS.jpg" width="300" height="auto" />
 
 
 
 ## Installation
 ### HACS
 If you use [HACS](https://hacs.xyz/) you can install and update this component.
-1. Go into HACS -> CUSTOM REPOSITORIES and add url: https://github.com/mykhailog/hacs_waveshare_ups_hat with type "integration"
-2. Go to integration, search "waveshare_ups_hat" and click *Install*.
+1. Go into HACS -> CUSTOM REPOSITORIES and add url: https://github.com/odya/hacs-ina219-ups-hat with type "integration"
+2. Go to integration, search "ina219_ups_hat" and click *Install*.
 
 
 ### Manual
-Download and unzip or clone this repository and copy `custom_components/waveshare_ups_hat/` to your configuration directory of Home Assistant, e.g. `~/.homeassistant/custom_components/`.
+Download and unzip or clone this repository and copy `custom_components/ina219_ups_hat/` to your configuration directory of Home Assistant, e.g. `~/.homeassistant/custom_components/`.
 
 In the end your file structure should look like that:
 ```
-~/.homeassistant/custom_components/waveshare_ups_hat/__init__.py
-~/.homeassistant/custom_components/waveshare_ups_hat/manifest.json
-~/.homeassistant/custom_components/waveshare_ups_hat/sensor.py
-~/.homeassistant/custom_components/waveshare_ups_hat/binary_sensor.py
-~/.homeassistant/custom_components/waveshare_ups_hat/const.py
-~/.homeassistant/custom_components/waveshare_ups_hat/ina219.py
+~/.homeassistant/custom_components/ina219_ups_hat/__init__.py
+~/.homeassistant/custom_components/ina219_ups_hat/manifest.json
+~/.homeassistant/custom_components/ina219_ups_hat/sensor.py
+~/.homeassistant/custom_components/ina219_ups_hat/binary_sensor.py
+~/.homeassistant/custom_components/ina219_ups_hat/const.py
+~/.homeassistant/custom_components/ina219_ups_hat/ina219.py
+~/.homeassistant/custom_components/ina219_ups_hat/ina219_wrapper.py
 ```
 
 ## Configuration
@@ -35,12 +37,13 @@ Create a new sensor entry in your `configuration.yaml`
 
 ```yaml
 sensor:
-  - platform: waveshare_ups_hat
-    name: UPS                    # Optional
-    unique_id: waveshare_ups     # Optional
-    max_soc: 91                  # Optional
-    sma_samples: 5               # Optional
-    batteries_count: 2           # Optional
+  - platform: ina219_ups_hat
+    name: Hassio UPS          # Optional
+    unique_id: hassio_ups     # Optional
+    scan_interval: 60         # Optional
+    batteries_count: 3        # Optional
+    max_soc: 91               # Optional
+    battery_capacity: 9000    # Optional
 ```
 Following data can be read:
  - SoC (State of Charge)
@@ -56,7 +59,7 @@ If you consistently experience capacity below 100% when the device is fully char
 
 ```yaml
 sensor:
-  - platform: waveshare_ups_hat
+  - platform: ina219_ups_hat
     max_soc: 91                      
 ```
 
@@ -65,7 +68,7 @@ By default, the SMA5 filter is applied to the measurements from INA219. That's n
 
 ```yaml
 sensor:
-  - platform: waveshare_ups_hat
+  - platform: ina219_ups_hat
     max_soc: 91
     sma_samples: 10                    
 ```
@@ -73,14 +76,14 @@ sensor:
 *Tip:* Doubled window size is used for calculation of SoC, Remaining Battery Capacity and Remaining Time
 
 #### Batteries Count
-The original Waveshare UPS Hat has 2 batteries in series (8.4V), but some versions of the UPS Hat may have 3 batteries (12.6V). If you have more than 2 batteries in series, use the `batteries_count` parameter.
+The original Waveshare UPS Hat has 2 batteries in series (8.4V), but some versions of the UPS Hats may have 3 batteries (12.6V). If you have more than 2 batteries in series, use the `batteries_count` parameter.
 
 ### Binary Sensor
 In addition to the  sensor devices, you may also create a device which is simply “on” when the UPS status is online and “off” at all other times.
 
 ```yaml
 binary_sensor:
-  - platform: waveshare_ups_hat
+  - platform: ina219_ups_hat
 ```
 
 ## Directions for installing smbus support on Raspberry Pi

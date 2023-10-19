@@ -1,4 +1,4 @@
-- id: 'waveshare_ina219_ups_hat_on_power_loss'
+- id: 'ina219_ups_hat_on_power_loss'
   alias: UPS - On Power Loss
   description: 'Send notification on power loss'
   trigger:
@@ -18,7 +18,7 @@
       title: Hass UPS
   mode: single
 
-- id: 'waveshare_ina219_ups_hat_on_charge_critical'
+- id: 'ina219_ups_hat_on_charge_critical'
   alias: UPS - On Charge Critical
   description: "Send notification & gracefully shutdown host"
   trigger:
@@ -42,7 +42,7 @@
     enabled: true
   mode: single
 
-- id: 'waveshare_ina219_ups_hat_on_power_restored'
+- id: 'ina219_ups_hat_on_power_restored'
   alias: UPS - On Power Restored
   description: 'Send notification when power restored'
   trigger:
@@ -62,7 +62,7 @@
       title: Hass UPS
   mode: single
 
-- id: 'waveshare_ina219_ups_hat_on_power_restored_after_shutdown'
+- id: 'ina219_ups_hat_on_power_restored_after_shutdown'
   alias: UPS - Power restored after shutdown
   description: 'Send notification when power restored after hard or graceful shutdown'
   trigger:

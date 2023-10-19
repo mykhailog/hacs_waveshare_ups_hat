@@ -7,7 +7,7 @@ import homeassistant.helpers.config_validation as cv
 from .ina219 import INA219
 from homeassistant.const import DEVICE_CLASS_POWER
 
-DEFAULT_NAME = "waveshare_ups_hat_online"
+DEFAULT_NAME = "ina219_ups_hat_online"
 from .const import MIN_ONLINE_CURRENT
 
 

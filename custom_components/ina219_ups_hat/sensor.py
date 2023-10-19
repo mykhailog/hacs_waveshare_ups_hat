@@ -1,4 +1,4 @@
-"""Details about the Waveshare UPS Hat sensor"""
+"""Details about the INA219 UPS Hat sensor"""
 import logging
 import os
 
@@ -46,7 +46,7 @@ CONF_BATTERY_CAPACITY = "battery_capacity"
 CONF_MAX_SOC = "max_soc"
 CONF_SMA_SAMPLES = "sma_samples"
 CONF_BATTERIES_COUNT = "batteries_count"
-DEFAULT_NAME = "waveshare_ups_hat"
+DEFAULT_NAME = "ina219_ups_hat"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
@@ -61,18 +61,18 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
-    """Set up the Waveshare UPS Hat sensor."""
+    """Set up the INA219 UPS Hat sensor."""
     name = config.get(CONF_NAME)
     unique_id = config.get(CONF_UNIQUE_ID)
     max_soc = config.get(CONF_MAX_SOC)
     battery_capacity = config.get(CONF_BATTERY_CAPACITY)
     batteries_count = config.get(CONF_BATTERIES_COUNT)
     sma_samples = config.get(CONF_SMA_SAMPLES)
-    add_entities([WaveshareUpsHat(name, unique_id, max_soc, battery_capacity, batteries_count, sma_samples)], True)
+    add_entities([INA219UpsHat(name, unique_id, max_soc, battery_capacity, batteries_count, sma_samples)], True)
 
 
-class WaveshareUpsHat(SensorEntity):
-    """Representation of a Waveshare UPS Hat."""
+class INA219UpsHat(SensorEntity):
+    """Representation of a INA219 UPS Hat."""
 
     def __init__(self, name, unique_id=None, max_soc=None, battery_capacity=None, batteries_count=None, sma_samples=None):
         """Initialize the sensor."""

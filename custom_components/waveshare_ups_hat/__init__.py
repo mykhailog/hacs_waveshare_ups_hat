@@ -1,1 +1,0 @@
-"""Waveshare UPS Hat"""

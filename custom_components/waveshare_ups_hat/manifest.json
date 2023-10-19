@@ -1,9 +1,0 @@
-{
-  "domain": "waveshare_ina219_ups_hat",
-  "name": "Waveshare INA219 UPS Hat",
-  "documentation": "https://github.com/odya/hacs-waveshare-ina219-ups-hat",
-  "issue_tracker": "https://github.com/odya/hacs-waveshare-ina219-ups-hat/issues",
-  "requirements": ["smbus2>=0.4.2","numpy>=1.23.2"],
-  "codeowners": ["@mykhailog","@odya"],
-  "version": "0.2.0"
-}

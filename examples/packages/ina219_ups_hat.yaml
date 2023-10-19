@@ -1,12 +1,13 @@
-waveshare_ups_hat:
+ina219_ups_hat:
   sensor:
-    - platform: waveshare_ups_hat
+    - platform: ina219_ups_hat
       name: Hassio UPS SoC
       unique_id: hassio_ups
       scan_interval: 30
       batteries_count: 3
       max_soc: 91
       battery_capacity: 9000
+      sma_samples: 5
 
     - platform: filter
       name: "Hassio UPS SMA Load Voltage"
