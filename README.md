@@ -5,10 +5,12 @@
 
 This integration allows you to monitor any INA219 based UPS hat (e.g. [Waveshare UPS Hat](https://www.waveshare.com/wiki/UPS_HAT) or its clones) status in your Home Assistant instance.
 
-<img alt="Waveshare UPS hat" src="https://user-images.githubusercontent.com/1454659/114266149-595d6280-99fd-11eb-9056-dd0fbe178ecc.png" width="300" height="auto" />
-<img alt="INA219 UPS hat" src="docs/INA219_3S_UPS.jpg" width="300" height="auto" />
-
-
+<table border="0">
+<tr>
+<td valign="top"><img alt="Waveshare UPS hat" src="https://user-images.githubusercontent.com/1454659/114266149-595d6280-99fd-11eb-9056-dd0fbe178ecc.png" width="300" height="auto"></td>
+<td valign="top"><img alt="INA219 UPS hat" src="docs/INA219_3S_UPS.jpg" width="300" height="auto"></td>
+</tr>
+</table>
 
 ## Installation
 ### HACS
