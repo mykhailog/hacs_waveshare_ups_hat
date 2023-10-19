@@ -34,6 +34,18 @@ In the end your file structure should look like that:
 ```
 
 ## Configuration
+### Example configuration package
+You can use preconfigured integration package if your HA instance is configured to use packages. 
+You can check it by presence of `packages` directory in config folder and such code in `configuration.yaml`:
+```yaml
+homeassistant:
+  packages: !include_dir_merge_named packages
+```
+After that you can copy file [ina219_ups_hat.yaml](/examples/packages/ina219_ups_hat.yaml) to your `packages` folder & customize it.
+
+### Example automations
+Copy contents of [examples/automations.yaml](/examples/automations.yaml) to your `automations.yaml`. Customize.
+
 ### Sensor
 Create a new sensor entry in your `configuration.yaml` 
 
@@ -140,6 +152,10 @@ It will output a table like this:
 60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 70: -- -- -- -- -- -- -- 77
 ```
+
+## References
+- Based on [waveshare_ups_hat](https://github.com/mykhailog/hacs_waveshare_ups_hat) integration by [@mykhailog](https://github.com/mykhailog)
+- Cheap [INA219 UPS Hat](https://www.aliexpress.com/item/1005005071564178.html) module from AliExpress
 
 ## License
 MIT 2023
