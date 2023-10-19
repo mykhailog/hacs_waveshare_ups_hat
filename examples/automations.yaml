@@ -1,0 +1,94 @@
+- id: 'waveshare_ina219_ups_hat_on_power_loss'
+  alias: UPS - On Power Loss
+  description: 'Send notification on power loss'
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.hassio_ups_online
+    from: 'on'
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 5
+  action:
+  - service: notify.notify
+    data:
+      message: Power outage detected
+      title: Hass UPS
+  mode: single
+
+- id: 'waveshare_ina219_ups_hat_on_charge_critical'
+  alias: UPS - On Charge Critical
+  description: "Send notification & gracefully shutdown host"
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.hassio_ups_raw_psu_voltage
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 20
+    below: 10.1
+  action:
+  - service: notify.notify
+    data:
+      message: Battery critical. Shutting down.
+      title: Hass UPS
+  - event: set_shutdown_reason
+    event_data:
+      reason: ups_charge_critical
+  - service: hassio.host_shutdown
+    data: {}
+    enabled: true
+  mode: single
+
+- id: 'waveshare_ina219_ups_hat_on_power_restored'
+  alias: UPS - On Power Restored
+  description: 'Send notification when power restored'
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.hassio_ups_online
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 5
+    from: 'off'
+  action:
+  - service: notify.notify
+    data:
+      message: Power restored
+      title: Hass UPS
+  mode: single
+
+- id: 'waveshare_ina219_ups_hat_on_power_restored_after_shutdown'
+  alias: UPS - Power restored after shutdown
+  description: 'Send notification when power restored after hard or graceful shutdown'
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.hassio_shutdown_last_reason
+    to: ups_charge_critical
+  condition: []
+  action:
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - if:
+    - condition: state
+      entity_id: sensor.hassio_shutdown_last_result
+      state: hard
+    then:
+    - service: notify.notify
+      data:
+        message: Power restored after hard shutdown
+        title: '* Hassio *'
+    else:
+    - service: notify.notify
+      data:
+        message: Power restored after shutdown
+        title: '* Hassio *'
+  mode: single
