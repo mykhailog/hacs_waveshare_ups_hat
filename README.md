@@ -12,7 +12,7 @@ This integration allows you to monitor any INA219 based UPS hat (e.g. [Waveshare
 ## Installation
 ### HACS
 If you use [HACS](https://hacs.xyz/) you can install and update this component.
-1. Go into HACS -> CUSTOM REPOSITORIES and add url: https://github.com/odya/hacs-ina219-ups-hat with type "integration"
+1. Go into HACS -> CUSTOM REPOSITORIES and add url: https://github.com/odya/hass-ina219-ups-hat with type "integration"
 2. Go to integration, search "ina219_ups_hat" and click *Install*.
 
 

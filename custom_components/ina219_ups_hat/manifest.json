@@ -3,10 +3,10 @@
   "name": "INA219 UPS Hat",
   "codeowners": ["@odya","@mykhailog"],
   "dependencies": [],
-  "documentation": "https://github.com/odya/hacs-ina219-ups-hat",
+  "documentation": "https://github.com/odya/hass-ina219-ups-hat",
   "integration_type": "device",
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/odya/hacs-ina219-ups-hat/issues",
+  "issue_tracker": "https://github.com/odya/hass-ina219-ups-hat/issues",
   "requirements": ["smbus2>=0.4.2","numpy>=1.23.2"],
   "version": "0.2.0"
 }
