@@ -1,6 +1,3 @@
-
-
-
 # INA219 UPS HAT Integration for Home Assistant
 
 This integration allows you to monitor any INA219 based UPS hat (e.g. [Waveshare UPS Hat](https://www.waveshare.com/wiki/UPS_HAT) or its clones) status in your Home Assistant instance.
@@ -153,8 +150,11 @@ It will output a table like this:
 70: -- -- -- -- -- -- -- 77
 ```
 
-## References
-- Based on [waveshare_ups_hat](https://github.com/mykhailog/hacs_waveshare_ups_hat) integration by [@mykhailog](https://github.com/mykhailog)
+## Thanks
+Most of the code was written by [@mykhailog](https://github.com/mykhailog), the author of the original [integration](https://github.com/mykhailog/hacs_waveshare_ups_hat). Unfortunately, his repository seems to be inactive, so I decided to fork it.
+
+## Notes
+- Original [waveshare_ups_hat](https://github.com/mykhailog/hacs_waveshare_ups_hat) integration by [@mykhailog](https://github.com/mykhailog) (seems to be dead)
 - Cheap [INA219 UPS Hat](https://www.aliexpress.com/item/1005005071564178.html) module from AliExpress
 
 ## License
