@@ -31,18 +31,6 @@ In the end your file structure should look like that:
 ```
 
 ## Configuration
-### Example configuration package
-You can use preconfigured integration package if your HA instance is configured to use packages. 
-You can check it by presence of `packages` directory in config folder and such code in `configuration.yaml`:
-```yaml
-homeassistant:
-  packages: !include_dir_merge_named packages
-```
-After that you can copy file [ina219_ups_hat.yaml](/examples/packages/ina219_ups_hat.yaml) to your `packages` folder & customize it.
-
-### Example automations
-Copy contents of [examples/automations.yaml](/examples/automations.yaml) to your `automations.yaml`. Customize.
-
 ### Sensor
 Create a new sensor entry in your `configuration.yaml` 
 
@@ -55,16 +43,17 @@ sensor:
     batteries_count: 3        # Optional
     max_soc: 91               # Optional
     battery_capacity: 9000    # Optional
+    sma_samples: 5            # Optional
 ```
 Following data can be read:
  - SoC (State of Charge)
- - PSU Voltage
- - Shunt Voltage
+ - Voltage
  - Current
  - Power
  - Charging Status
  - Online Status
- - Is Low Battery (< 20%)
+ - Remaining Capacity
+ - Remaining Time
 
 If you consistently experience capacity below 100% when the device is fully charged, you can adjust it using the `max_soc` property.
 
@@ -89,13 +78,8 @@ sensor:
 #### Batteries Count
 The original Waveshare UPS Hat has 2 batteries in series (8.4V), but some versions of the UPS Hats may have 3 batteries (12.6V). If you have more than 2 batteries in series, use the `batteries_count` parameter.
 
-### Binary Sensor
-In addition to the  sensor devices, you may also create a device which is simply “on” when the UPS status is online and “off” at all other times.
-
-```yaml
-binary_sensor:
-  - platform: ina219_ups_hat
-```
+### Example automations
+Copy contents of [examples/automations.yaml](/examples/automations.yaml) to your `automations.yaml`. Customize.
 
 ## Directions for installing smbus support on Raspberry Pi
 

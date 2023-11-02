@@ -52,7 +52,7 @@ class INA219Wrapper:
             return np.median(self._getBufTail(buf, divider))
         return np.median(buf)
 
-    def _getBufTail(self, buf:deque, divider:int):
-        slice_start = len(buf) - int(len(buf) / divider)
+    def _getBufTail(self, buf: deque, divider: int):
+        slice_start = len(buf) - int(len(buf) / divider) - 1
         slice_end = len(buf)
         return list(buf)[slice_start:slice_end]

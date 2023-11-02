@@ -1,1 +1,1 @@
-"""Waveshare INA219 UPS Hat"""
+"""INA219 UPS Hat"""
