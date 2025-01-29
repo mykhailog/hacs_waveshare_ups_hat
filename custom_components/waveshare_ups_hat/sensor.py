@@ -1,15 +1,10 @@
-"""Details about the Waveshare UPS Hat sensor"""
 import logging
 import os
-
 import voluptuous as vol
 
-from homeassistant.components.sensor import SensorEntity,PLATFORM_SCHEMA
-from homeassistant.const import DEVICE_CLASS_BATTERY, PERCENTAGE, CONF_NAME, CONF_UNIQUE_ID
+from homeassistant.components.sensor import SensorEntity, PLATFORM_SCHEMA, SensorDeviceClass
+from homeassistant.const import PERCENTAGE, CONF_NAME, CONF_UNIQUE_ID
 import homeassistant.helpers.config_validation as cv
-
-
-_LOGGER = logging.getLogger(__name__)
 
 from .ina219 import INA219
 from .const import (
@@ -18,6 +13,8 @@ from .const import (
     MIN_BATTERY_CONNECTED_CURRENT,
     LOW_BATTERY_PERCENTAGE
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 ATTR_CAPACITY = "capacity"
 ATTR_SOC = "soc"
@@ -31,12 +28,12 @@ ATTR_CHARGING = "charging"
 ATTR_ONLINE = "online"
 ATTR_BATTERY_CONNECTED = "battery_connected"
 ATTR_LOW_BATTERY = "low_battery"
-ATTR_POWER_CALCULATED= "power_calculated"
+ATTR_POWER_CALCULATED = "power_calculated"
 
 ATTR_REMAINING_BATTERY_CAPACITY = "remaining_battery_capacity"
 ATTR_REMAINING_TIME = "remaining_time_min"
 
-CONF_BATTERY_CAPACITY= "battery_capacity"
+CONF_BATTERY_CAPACITY = "battery_capacity"
 CONF_MAX_SOC = 'max_soc'
 DEFAULT_NAME = "waveshare_ups_hat"
 
@@ -53,8 +50,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     unique_id = config.get(CONF_UNIQUE_ID)
     max_soc = config.get(CONF_MAX_SOC)
     battery_capacity = config.get(CONF_BATTERY_CAPACITY)
-    add_entities([WaveshareUpsHat(name,unique_id,max_soc,battery_capacity)], True)
-
+    add_entities([WaveshareUpsHat(name, unique_id, max_soc, battery_capacity)], True)
 
 class WaveshareUpsHat(SensorEntity):
     """Representation of a Waveshare UPS Hat."""
@@ -64,9 +60,9 @@ class WaveshareUpsHat(SensorEntity):
         self._name = name
         self._unique_id = unique_id
         if max_soc > 100:
-           max_soc = 100
+            max_soc = 100
         elif max_soc < 1:
-           max_soc = 1
+            max_soc = 1
         self._max_soc = max_soc
         self._battery_capacity = battery_capacity
         self._ina219 = INA219(addr=0x42)
@@ -80,7 +76,7 @@ class WaveshareUpsHat(SensorEntity):
     @property
     def device_class(self):
         """Return the device class of the sensor."""
-        return DEVICE_CLASS_BATTERY
+        return SensorDeviceClass.BATTERY
 
     @property
     def state(self):
@@ -103,29 +99,22 @@ class WaveshareUpsHat(SensorEntity):
         return self._unique_id
 
     def update(self):
-        """Get the latest data and updates the states."""
+        """Get the latest data and update the states."""
         ina219 = self._ina219
-        bus_voltage = ina219.getBusVoltage_V()  # voltage on V- (load side)
+        bus_voltage = ina219.getBusVoltage_V()  # Voltage on V- (load side)
         shunt_voltage = (
             ina219.getShuntVoltage_mV() / 1000
-        )  # voltage between V+ and V- across the shunt
-        current = ina219.getCurrent_mA()  # current in mA
-        power = ina219.getPower_W()  # power in W
+        )  # Voltage between V+ and V- across the shunt
+        current = ina219.getCurrent_mA()  # Current in mA
+        power = ina219.getPower_W()  # Power in W
 
         real_soc = (bus_voltage - 6) / 2.4 * 100
+        soc = (bus_voltage - 6) / (2.4 * (self._max_soc / 100.0)) * 100
 
-        soc  = (bus_voltage - 6) / (2.4 * (self._max_soc / 100.0) )  * 100
-
-        if soc > 100:
-            soc = 100
-        if soc < 0:
-            soc = 0
-
-        #battery_connected = current > MIN_BATTERY_CONNECTED_CURRENT
+        soc = min(max(soc, 0), 100)
 
         online = current > MIN_ONLINE_CURRENT
         charging = current > MIN_CHARGING_CURRENT
-
         low_battery = online and soc < LOW_BATTERY_PERCENTAGE
         power_calculated = bus_voltage * (current / 1000)
 
@@ -136,28 +125,22 @@ class WaveshareUpsHat(SensorEntity):
             remaining_battery_capacity = (real_soc / 100.0) * self._battery_capacity
             if current < 0:
                 remaining_time = round((remaining_battery_capacity / -current) * 60.0, 0)
-            elif current > 0:
-                remaining_time = None # round(((self._battery_capacity - remaining_battery_capacity) / current) * 60.0, 0)
             else:
                 remaining_time = None
-
-        # if not battery_connected:
-        #    capacity = 0.0  # no battery no capacity
 
         self._attrs = {
             ATTR_CAPACITY: round(soc, 0),
             ATTR_SOC: round(soc, 0),
             ATTR_REAL_SOC: real_soc,
-            ATTR_PSU_VOLTAGE: round(bus_voltage + shunt_voltage,5),
-            ATTR_LOAD_VOLTAGE: round(bus_voltage,5),
-            ATTR_SHUNT_VOLTAGE: round(shunt_voltage,5),
-            ATTR_CURRENT: round(current,5),
-            ATTR_POWER: round(power,5),
-            ATTR_POWER_CALCULATED: round(power_calculated,5),
+            ATTR_PSU_VOLTAGE: round(bus_voltage + shunt_voltage, 5),
+            ATTR_LOAD_VOLTAGE: round(bus_voltage, 5),
+            ATTR_SHUNT_VOLTAGE: round(shunt_voltage, 5),
+            ATTR_CURRENT: round(current, 5),
+            ATTR_POWER: round(power, 5),
+            ATTR_POWER_CALCULATED: round(power_calculated, 5),
             ATTR_CHARGING: charging,
             ATTR_ONLINE: online,
             ATTR_REMAINING_BATTERY_CAPACITY: remaining_battery_capacity,
             ATTR_REMAINING_TIME: remaining_time,
-#            ATTR_BATTERY_CONNECTED: battery_connected,
             ATTR_LOW_BATTERY: low_battery
         }
